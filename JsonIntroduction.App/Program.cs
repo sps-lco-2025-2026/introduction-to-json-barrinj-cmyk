@@ -7,7 +7,7 @@ using System.Net;
 // A JSON file starts with either
 // - a square bracket, indicating a list,
 // - or a curly bracket, indicating a dictionary or object
-string json = @"{""key1"":""value1"",""key2"":""value2""}";
+/*string json = @"{""key1"":""value1"",""key2"":""value2""}";
 
 // a curly bracket could just be a simple collection matching keys to values, both strings 
 IDictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
@@ -101,8 +101,47 @@ for (int i = 0; i < 10; ++i)
     Console.WriteLine($"{dt:T} : ({o.iss_position.latitude}, {o.iss_position.longitude})");
     Thread.Sleep(2000);
 }
+*/
 
-// and relax
+string gbpExchange;
+using (var wc = new WebClient())
+{
+    gbpExchange = wc.DownloadString("https://api.exchangerate-api.com/v4/latest/GBP");
+}
+
+JObject exchange = JObject.Parse(gbpExchange);
+JObject rates = (JObject)exchange["rates"];
+Console.WriteLine("Enter a currency code to see the exchange rate against GBP");
+string ticker = Console.ReadLine();
+
+foreach (var rate in rates)
+{
+    if (rate.Key.Equals(ticker, StringComparison.OrdinalIgnoreCase))
+    {
+        Console.WriteLine($"{rate.Key}: {rate.Value}");
+    }
+}
+
+
+Random random = new Random();
+int randCurrency = random.Next(0, rates.Count);
+for (int i = 0; i < rates.Count; ++i)
+{
+    if (i == randCurrency)
+    {
+        var rate = rates.ElementAt<KeyValuePair<string, JToken>>(i);
+        Console.WriteLine($"{rate.Value}");
+        string guess = Console.ReadLine();
+        if (guess.Equals(rate.Value.ToString(), StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine("Correct!");
+        }
+        else
+        {
+            Console.WriteLine($"Wrong! The correct answer was {rate.Key}");
+        }
+    }
+}
 
 
 void PressAKey()
