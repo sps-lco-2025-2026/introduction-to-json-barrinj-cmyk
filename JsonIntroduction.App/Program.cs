@@ -7,7 +7,7 @@ using System.Net;
 // A JSON file starts with either
 // - a square bracket, indicating a list,
 // - or a curly bracket, indicating a dictionary or object
-/*string json = @"{""key1"":""value1"",""key2"":""value2""}";
+string json = @"{""key1"":""value1"",""key2"":""value2""}";
 
 // a curly bracket could just be a simple collection matching keys to values, both strings 
 IDictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
@@ -101,7 +101,8 @@ for (int i = 0; i < 10; ++i)
     Console.WriteLine($"{dt:T} : ({o.iss_position.latitude}, {o.iss_position.longitude})");
     Thread.Sleep(2000);
 }
-*/
+
+PressAKey();
 
 string gbpExchange;
 using (var wc = new WebClient())
