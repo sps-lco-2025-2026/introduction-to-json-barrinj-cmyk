@@ -102,7 +102,47 @@ for (int i = 0; i < 10; ++i)
     Thread.Sleep(2000);
 }
 
-// and relax
+PressAKey();
+
+string gbpExchange;
+using (var wc = new WebClient())
+{
+    gbpExchange = wc.DownloadString("https://api.exchangerate-api.com/v4/latest/GBP");
+}
+
+JObject exchange = JObject.Parse(gbpExchange);
+JObject rates = (JObject)exchange["rates"];
+Console.WriteLine("Enter a currency code to see the exchange rate against GBP");
+string ticker = Console.ReadLine();
+
+foreach (var rate in rates)
+{
+    if (rate.Key.Equals(ticker, StringComparison.OrdinalIgnoreCase))
+    {
+        Console.WriteLine($"{rate.Key}: {rate.Value}");
+    }
+}
+
+
+Random random = new Random();
+int randCurrency = random.Next(0, rates.Count);
+for (int i = 0; i < rates.Count; ++i)
+{
+    if (i == randCurrency)
+    {
+        var rate = rates.ElementAt<KeyValuePair<string, JToken>>(i);
+        Console.WriteLine($"{rate.Value}");
+        string guess = Console.ReadLine();
+        if (guess.Equals(rate.Value.ToString(), StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine("Correct!");
+        }
+        else
+        {
+            Console.WriteLine($"Wrong! The correct answer was {rate.Key}");
+        }
+    }
+}
 
 
 void PressAKey()
